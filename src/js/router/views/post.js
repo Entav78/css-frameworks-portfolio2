@@ -4,54 +4,50 @@ function getPostIdFromUrl() {
   return params.get('id');
 }
 
-// Import required services
 import { PostService } from '../../api/post/postService.js';
 import { basePath } from '../../api/constants.js';
 
-// Initialize PostService instance
 const postService = new PostService();
 
-// Function to load and display the post
 async function loadPost() {
   const postId = getPostIdFromUrl();
-
-  if (!postId) {
-    displayMessage('Post not found.');
-    return;
-  }
+  if (!postId) return displayMessage('Post not found.');
 
   try {
     const post = await postService.readPost(postId);
-    console.log('Loaded post:', post);
-
     displayPost(post);
     displayEditDeleteButtons(post);
-  } catch (error) {
-    console.error('Error loading post:', error);
-    displayMessage(`Error loading post: ${error.message}`);
+  } catch (err) {
+    displayMessage(`Error loading post: ${err.message}`);
   }
 }
 
 function displayPost(post) {
   const postData = post.data;
-  const postContainer = document.querySelector('.post-container');
-  if (!postContainer) return;
+  const el = document.querySelector('.post-container');
+  if (!el) return;
 
-  postContainer.innerHTML = `
-    <article class="container py-4">
+  el.innerHTML = `
+    <article>
       <header class="mb-3">
-        <h1 class="h3 mb-2">${postData.title || 'Untitled Post'}</h1>
-        ${postData.tags?.length ? `<p class="text-body-secondary small mb-0">Tags: ${postData.tags.join(', ')}</p>` : ''}
+        <h1 class="h3 mb-1">${postData.title || 'Untitled Post'}</h1>
+        ${postData.tags?.length
+          ? `<p class="text-body-secondary small mb-0">Tags: ${postData.tags.join(', ')}</p>`
+          : ''
+        }
       </header>
 
-      ${postData.media?.url ? `
-        <figure class="card shadow-sm mb-3">
-          <img
-            src="${postData.media.url}"
-            alt="${postData.media.alt || 'Post image'}"
-            class="card-img-top img-fluid w-100"
-          />
-        </figure>` : `<p class="text-body-secondary">No image available.</p>`}
+      ${
+        postData.media?.url
+          ? `
+            <figure class="card shadow-sm mb-3 post-hero">
+              <img src="${postData.media.url}"
+                   alt="${postData.media.alt || 'Post image'}"
+                   class="card-img-top img-fluid w-100"
+                   loading="lazy" decoding="async" />
+            </figure>`
+          : `<p class="text-body-secondary">No image available.</p>`
+      }
 
       ${postData.body ? `<p class="lead">${postData.body}</p>` : ''}
 
@@ -63,60 +59,43 @@ function displayPost(post) {
   `;
 }
 
-
-// Function to display edit and delete buttons
 function displayEditDeleteButtons(post) {
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const user = JSON.parse(localStorage.getItem('userDetails'));
+  if (user?.name !== post.author?.name) return;
 
-  if (userDetails?.name === post.author?.name) {
-    const buttonsContainer = document.querySelector('.buttons-container');
-    if (!buttonsContainer) {
-      console.error('Buttons container not found.');
-      return;
+  const wrap = document.querySelector('.buttons-container');
+  if (!wrap) return;
+
+  wrap.innerHTML = '';
+
+  const edit = document.createElement('a');
+  edit.className = 'btn btn-primary me-2';
+  edit.textContent = 'Edit Post';
+  edit.href = `${basePath}/post/manage/?id=${post.id}`;
+
+  const del = document.createElement('button');
+  del.className = 'btn btn-danger';
+  del.textContent = 'Delete Post';
+  del.addEventListener('click', async () => {
+    if (!confirm('Delete this post?')) return;
+    try {
+      await postService.deletePost(post.id);
+      alert('Post deleted.');
+      window.location.assign(`${basePath}/`);
+    } catch (e) {
+      alert(`Error deleting post: ${e.message}`);
     }
+  });
 
-    buttonsContainer.innerHTML = '';
-
-    // Edit button
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit Post';
-    editButton.className = 'btn btn-primary';
-    editButton.addEventListener('click', () => {
-      window.location.pathname = `${basePath}/post/manage/?id=${post.id}`;
-    });
-    buttonsContainer.appendChild(editButton);
-
-    // Delete button
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete Post';
-    deleteButton.className = 'btn btn-danger';
-    deleteButton.addEventListener('click', async () => {
-      const confirmation = confirm(
-        'Are you sure you want to delete this post?'
-      );
-      if (confirmation) {
-        try {
-          await postService.deletePost(post.id);
-          alert('Post deleted successfully.');
-          window.location.pathname = `${basePath}/`;
-        } catch (error) {
-          alert(`Error deleting post: ${error.message}`);
-        }
-      }
-    });
-    buttonsContainer.appendChild(deleteButton);
-  }
+  wrap.append(edit, del);
 }
 
-// Function to display messages
-function displayMessage(message) {
-  const postContainer = document.querySelector('.post-container');
-  if (postContainer) {
-    postContainer.innerHTML = `<p>${message}</p>`;
-  }
+function displayMessage(msg) {
+  const el = document.querySelector('.post-container');
+  if (el) el.innerHTML = `<p class="text-body-secondary">${msg}</p>`;
 }
 
-// Ensure DOM is fully loaded
+// boot
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadPost);
 } else {

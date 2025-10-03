@@ -12,9 +12,7 @@ img { max-width: 100%; height: auto; display: block; } /* sensible default */
 /* =======================================================================
    HOME (grid of cards)  -> body class="page-home"
    ======================================================================= */
-.page-home .post-container {                 /* the container DIV you render into */
-  /* DO NOT force display:grid or flex here – Bootstrap handles layout */
-}
+
 
 .page-home .post-container .row > [class*="col-"] .card {
   display: flex;           /* let body stretch so cards line up nicely */
@@ -51,10 +49,64 @@ img { max-width: 100%; height: auto; display: block; } /* sensible default */
 /* optional little spacing polishing */
 .page-profile .card + .card { margin-top: 0; }
 
-/* =======================================================================
-   Remove old broad rules that were breaking layouts (DON’T re-add these)
-   -----------------------------------------------------------------------
-   ✗ .post-container { display:flex/grid; flex-wrap:wrap; }
-   ✗ .post-container img { height: 200px; }  (or any fixed heights)
-   ✗ .post-container > * { width: 50% / 33% … }  (let Bootstrap cols do it)
-   ======================================================================= */
+/* ——— Single post hero image: cap height + crop ——— */
+.page-post .post-hero {
+  overflow: hidden;            /* hide overflow when we crop */
+  border-radius: .375rem;      /* matches Bootstrap card radius */
+}
+
+.page-post .post-hero img {
+  display: block;
+  width: 100%;
+  height: auto;                /* keep aspect ratio */
+  max-height: clamp(240px, 60vh, 720px); /* responsive cap */
+  object-fit: cover;           /* crop to the box instead of stretching */
+  object-position: center;     /* keep the interesting middle */
+}
+
+/* a slightly tighter cap on small screens */
+@media (max-width: 576px) {
+  .page-post .post-hero img {
+    max-height: 45vh;
+  }
+}
+
+/* Cursor pointers for interactive stuff */
+:where(
+  a[href],
+  button,
+  [type="button"],
+  [role="button"],
+  .btn,
+  .btn-close,
+  .nav-link,
+  .navbar-toggler,
+  .dropdown-item,
+  .list-group-item-action,
+  .page-link
+) {
+  cursor: pointer;
+}
+
+/* Make whole cards feel clickable when they contain a link (e.g. .stretched-link) */
+@supports selector(:has(*)) {
+  :where(.card, .post-card):has(.stretched-link),
+  :where(.card, .post-card):has(a[href]) {
+    cursor: pointer;
+  }
+}
+
+/* Optional: a subtle hover lift for clickable cards */
+@supports selector(:has(*)) {
+  .card:has(.stretched-link):hover,
+  .post-card:has(a[href]):hover {
+    box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,.06);
+  }
+}
+
+/* Don’t show pointer on disabled */
+:where(.btn:disabled, button[disabled], [aria-disabled="true"], .disabled) {
+  cursor: not-allowed;
+}
+
+.is-clickable { cursor: pointer; }
