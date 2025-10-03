@@ -2,120 +2,137 @@ import { basePath } from '../../api/constants.js';
 
 export class PostsRenderer {
   constructor(containerClass) {
-    this.containerClass = containerClass; // Save the container class
+    this.containerClass = containerClass; // e.g. 'post-container'
     this.container = null;
   }
 
   /**
-   * Initializes the PostsRenderer by fetching and displaying posts
-   * @param {Function} fetchPostsFunction - A function to fetch posts
+   * Initialize and render posts
+   * @param {Function} fetchPostsFunction - async () => { data: Post[] } | Post[]
    */
   async init(fetchPostsFunction) {
-    console.log('Initializing PostsRenderer...');
     this.container = document.querySelector(`.${this.containerClass}`);
-
     if (!this.container) {
-      console.error(`Container with class "${this.containerClass}" not found.`);
+      console.error(`Container ".${this.containerClass}" not found.`);
       return;
     }
 
-    console.log('Container found:', this.container);
+    // Turn container into a Bootstrap grid row
+    this.container.classList.add('row', 'g-3');
 
     try {
-      const posts = await fetchPostsFunction();
-      const postList = posts?.data || posts; // Use posts.data if available
+      const result = await fetchPostsFunction();
+      const posts = Array.isArray(result) ? result : result?.data || [];
 
-      if (postList.length > 0) {
-        this.renderPosts(postList);
-      } else {
+      if (!posts.length) {
         this.renderMessage('No posts available.');
+        return;
       }
-    } catch (error) {
-      this.renderMessage(`Error loading posts: ${error.message}`);
-      console.error('Error fetching posts:', error);
+
+      this.renderPosts(posts);
+    } catch (err) {
+      console.error('Error fetching posts:', err);
+      this.renderMessage(`Error loading posts: ${err.message}`);
     }
   }
 
   /**
-   * Renders the list of posts
-   * @param {Array} posts - List of posts
+   * Render a list of posts
    */
   renderPosts(posts) {
-    console.log('Rendering posts:', posts);
+    // Clear the row
     this.container.innerHTML = '';
 
-    const postList = document.createElement('div');
-    postList.className = 'post-list';
+    const row = document.createElement('div');
+    row.className = 'row g-3';
 
     posts.forEach((post) => {
-      console.log('Rendering post:', post);
-      const postElement = this.createPostElement(post);
-      postList.appendChild(postElement);
-    });
+    const col = this.createPostElement(post); // returns <div class="col-12 col-sm-6 col-lg-4">
+    row.appendChild(col);
+  });
 
-    this.container.appendChild(postList);
-  }
+  this.container.appendChild(row);
+}
 
   /**
-   * Creates an individual post element
-   * @param {Object} post - Post data
-   * @returns {HTMLElement} - The post element
+   * Create a single post card wrapped in a Bootstrap col
+   * Returns: <div class="col-12 col-sm-6 col-lg-4">...</div>
    */
   createPostElement(post) {
-    const postElement = document.createElement('div');
-    postElement.className = 'post-card';
+    // Column wrapper
+    const col = document.createElement('div');
+    col.className = 'col-12 col-sm-6 col-lg-4';
 
-    // Add post image if available
+    // Card
+    const card = document.createElement('article');
+    card.className = 'card h-100 shadow-sm';
+
+    // Image (top)
     if (post.media?.url) {
-      const thumbnail = document.createElement('img');
-      thumbnail.src = post.media.url;
-      thumbnail.alt = post.media.alt || 'Post Image';
-      thumbnail.className = 'post-image';
-      postElement.appendChild(thumbnail);
-    } else {
-      console.warn(`No image for post ${post.id}`);
+      const img = document.createElement('img');
+      img.src = post.media.url;
+      img.alt = post.media.alt || 'Post image';
+      img.className = 'card-img-top img-fluid'; 
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      card.appendChild(img);
     }
 
-    // Create the content wrapper
-    const content = document.createElement('div');
-    content.className = 'post-content';
 
-    // Add post title
+    // Body
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    // Title (link to single post)
     const title = document.createElement('h3');
-    title.className = 'post-title';
-    title.textContent = post.title || 'Untitled Post';
-    title.addEventListener('click', () => {
-      window.location.href = `${basePath}/post/?id=${post.id}`;
-    });
+    title.className = 'h6 card-title mb-1';
 
-    // Add post body
-    const body = document.createElement('p');
-    body.className = 'post-body';
-    body.textContent =
-      post.body && post.body.length > 100
-        ? `${post.body.substring(0, 100)}...`
-        : post.body || 'No content available.';
+    const link = document.createElement('a');
+    link.href = `${basePath}/post/?id=${post.id}`;
+    link.className = 'stretched-link text-decoration-none';
+    link.textContent = post.title || 'Untitled Post';
+    title.appendChild(link);
 
-    // Add tags
-    const tags = document.createElement('div');
-    tags.className = 'post-tags';
-    tags.textContent = `Tags: ${post.tags?.join(', ') || 'No tags'}`;
+    // Excerpt
+    const excerpt = document.createElement('p');
+    excerpt.className = 'card-text small text-body-secondary mb-0';
+    const text = post.body || '';
+    excerpt.textContent = text.length > 140 ? `${text.slice(0, 140)}…` : text;
 
-    // Append elements to content container
-    content.appendChild(title);
-    content.appendChild(body);
-    content.appendChild(tags);
+    // Optional tags (tiny helper)
+    if (post.tags?.length) {
+      const tags = document.createElement('div');
+      tags.className = 'mt-2 small text-body-tertiary';
+      tags.textContent = `Tags: ${post.tags.join(', ')}`;
+      body.append(title, excerpt, tags);
+    } else {
+      body.append(title, excerpt);
+    }
 
-    // Append content to post card
-    postElement.appendChild(content);
-    return postElement;
+    card.appendChild(body);
+    col.appendChild(card);
+    return col;
   }
 
   /**
-   * Renders a message in the container
-   * @param {string} message - Message to display
+   * Render a simple message (keeps the row but shows one full-width card)
    */
   renderMessage(message) {
-    this.container.innerHTML = `<p>${message}</p>`;
-  }
+  this.container.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'row g-3';
+
+  const col = document.createElement('div');
+  col.className = 'col-12';
+  col.innerHTML = `
+    <div class="card border-0 bg-body-secondary-subtle">
+      <div class="card-body"><p class="mb-0">${message}</p></div>
+    </div>
+  `;
+
+  row.appendChild(col);
+  this.container.appendChild(row);
 }
+
+}
+

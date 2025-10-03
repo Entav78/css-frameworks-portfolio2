@@ -1,79 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Post</title>
-    <link rel="stylesheet" href="../js2-ca-hilde/css/main.css" />
 
-    <script type="module" crossorigin src="/js2-ca-hilde/js/app-BThhd6Gm.js"></script>
-    <link rel="stylesheet" crossorigin href="/js2-ca-hilde/css/app-CSWwnEJb.css">
-  </head>
-  <body>
-    <header>
-      <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-          <h1>Manage Post</h1>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNav"
-            aria-controls="offcanvasNav">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-            </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Post</title>
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Load your app (brings in Bootstrap + styles.css) -->
+  <script type="module" crossorigin src="/js/app-CxrOAxwR.js"></script>
+  <link rel="stylesheet" crossorigin href="/css/app-ndFKaAR7.css">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+      <div class="container-fluid">
+        <h1 class="navbar-brand h3 mb-0">Manage Post</h1>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav"
+          aria-controls="offcanvasNav" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto"></ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasNav"
+      aria-labelledby="offcanvasNavLabel">
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5 mb-0" id="offcanvasNavLabel">Menu</h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav"></ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="container py-4">
+    <!-- Optional alert placeholder your JS can fill -->
+    <div id="manage-alert" class="alert d-none" role="alert"></div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 class="h4 mb-3">Create / Edit Post</h2>
+
+            <form name="managePostForm" data-action="create" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="form-control" required />
+                <div class="invalid-feedback">Please enter a title.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="body" class="form-label">Body</label>
+                <textarea id="body" name="body" class="form-control" rows="5"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="tags" class="form-label">Tags (comma-separated)</label>
+                <input type="text" id="tags" name="tags" class="form-control" />
+              </div>
+
+              <div class="mb-3">
+                <label for="mediaUrl" class="form-label">Media URL</label>
+                <input type="url" id="mediaUrl" name="mediaUrl" class="form-control" />
+              </div>
+
+              <div class="mb-4">
+                <label for="mediaAlt" class="form-label">Media Alt Text</label>
+                <input type="text" id="mediaAlt" name="mediaAlt" class="form-control" />
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
+                <button type="button" id="deletePostButton" data-post-id="" class="btn btn-outline-danger">
+                  Delete Post
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </nav>
-
-      <div
-        class="offcanvas offcanvas-start bg-dark text-white"
-        tabindex="-1"
-        id="offcanvasNav"
-        aria-labelledby="offcanvasNavLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavLabel">Menu</h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav">
-          </ul>
-        </div>
+        <!-- /card -->
       </div>
+    </div>
+  </main>
 
-      </div>
-    </header>
+  <footer class="border-top py-4 mt-5">
+    <div class="container small text-secondary">
+      &copy; 2025 H Vatne. All rights reserved.
+    </div>
+  </footer>
+</body>
 
-    <form name="managePostForm" data-action="create">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" required />
-
-      <label for="body">Body:</label>
-      <textarea id="body" name="body"></textarea>
-
-      <label for="tags">Tags (comma-separated):</label>
-      <input type="text" id="tags" name="tags" />
-
-      <label for="mediaUrl">Media URL:</label>
-      <input type="url" id="mediaUrl" name="mediaUrl" />
-
-      <label for="mediaAlt">Media Alt Text:</label>
-      <input type="text" id="mediaAlt" name="mediaAlt" />
-
-      <button type="submit" id="saveButton">Create Post</button>
-    </form>
-
-    <button id="deletePostButton" data-post-id="">Delete Post</button>
-    <footer>
-      <p>&copy; 2025 H Vatne. All rights reserved.</p>
-    </footer>
-  </body>
 </html>

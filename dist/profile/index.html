@@ -1,77 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
-    <link rel="stylesheet" href="/js2-ca-hilde/css/main.css" />
 
-    <script type="module" crossorigin src="/js2-ca-hilde/js/app-BThhd6Gm.js"></script>
-    <link rel="stylesheet" crossorigin href="/js2-ca-hilde/css/app-CSWwnEJb.css">
-  </head>
-  <body>
-    <header>
-      <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-          <h1>Profile</h1>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNav"
-            aria-controls="offcanvasNav"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-            </ul>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile</title>
+
+  <!-- Favicons (keep these) -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Vite entry -->
+  <script type="module" crossorigin src="/js/app-CxrOAxwR.js"></script>
+  <link rel="stylesheet" crossorigin href="/css/app-ndFKaAR7.css">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+      <div class="container-fluid">
+        <h1 class="navbar-brand h3 mb-0">Profile</h1>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav"
+          aria-controls="offcanvasNav" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <!-- filled by Navigation() -->
+          <ul class="navbar-nav ms-auto"></ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasNav"
+      aria-labelledby="offcanvasNavLabel">
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5 mb-0" id="offcanvasNavLabel">Menu</h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- filled by Navigation() -->
+        <ul class="navbar-nav"></ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-4">
+    <!-- Row for avatar card + dynamic details -->
+    <section class="row g-4 align-items-start mb-4">
+      <!-- LEFT: fallback avatar card (removed by JS if real avatar exists) -->
+      <div id="fallbackAvatarCard" class="col-12 col-md-3">
+        <div class="card text-center h-100">
+          <div class="card-body">
+            <img src="/images/IMG_9166.jpg" alt="Hilde and Sasha" class="rounded-circle object-fit-cover"
+              style="width:128px;height:128px" />
           </div>
         </div>
-      </nav>
-
-      <div
-        class="offcanvas offcanvas-start bg-dark text-white"
-        tabindex="-1"
-        id="offcanvasNav"
-        aria-labelledby="offcanvasNavLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavLabel">Menu</h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav">
-          </ul>
-        </div>
       </div>
-
+    
+      <!-- RIGHT: dynamic details -->
+      <div class="col-12 col-md-9">
+        <div id="dynamic-profile-details"></div>
       </div>
-    </header>
+    </section>
 
-    <main class="container my-5">
-      <section id="profile-details" class="mb-5">
-        <div class="personal-avatar">
-          <img src="/js2-ca-hilde/images/IMG_9166.jpg" alt="Me and my dog" class="personal-image" />
-          <p>Hilde and Sasha 🐶</p>
-        </div>
-    
-        <div id="dynamic-profile-details">
-          <h2>Loading profile...</h2>
-        </div>
-      </section>
-    
-      <section class="post-container">
-        <h2>Loading posts...</h2>
-      </section>
-    </main>
+  
+    <!-- Posts rendered by JS -->
+    <section class="mb-5">
+      <h2 class="h5 mb-3">Posts</h2>
+      <div class="post-container"></div>
+    </section>
+  </main>
 
-    <footer>
-      <p>&copy; 2025 H Vatne. All rights reserved.</p>
-    </footer>
-  </body>
+
+  <footer class="border-top py-4 mt-5">
+    <div class="container small text-secondary">
+      &copy; 2025 H Vatne. All rights reserved.
+    </div>
+  </footer>
+</body>
+
 </html>

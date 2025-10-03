@@ -33,37 +33,36 @@ async function loadPost() {
 }
 
 function displayPost(post) {
-  const postData = post.data; // Access the data property
-
+  const postData = post.data;
   const postContainer = document.querySelector('.post-container');
-  if (!postContainer) {
-    console.error('Post container not found.');
-    return;
-  }
+  if (!postContainer) return;
 
   postContainer.innerHTML = `
-    <h1>${postData.title || 'Untitled Post'}</h1>
-    <p>${postData.body || 'No content available.'}</p>
-    ${
-      postData.media?.url
-        ? `<img src="${postData.media.url}" alt="${
-            postData.media.alt || 'Post image'
-          }" />`
-        : `<p>No image available.</p>`
-    }
-    <p>Tags: ${postData.tags?.join(', ') || 'No tags available.'}</p>
-    <p>Created: ${
-      postData.created
-        ? new Date(postData.created).toLocaleString()
-        : 'Unknown date'
-    }</p>
-    <p>Updated: ${
-      postData.updated
-        ? new Date(postData.updated).toLocaleString()
-        : 'Unknown date'
-    }</p>
+    <article class="container py-4">
+      <header class="mb-3">
+        <h1 class="h3 mb-2">${postData.title || 'Untitled Post'}</h1>
+        ${postData.tags?.length ? `<p class="text-body-secondary small mb-0">Tags: ${postData.tags.join(', ')}</p>` : ''}
+      </header>
+
+      ${postData.media?.url ? `
+        <figure class="card shadow-sm mb-3">
+          <img
+            src="${postData.media.url}"
+            alt="${postData.media.alt || 'Post image'}"
+            class="card-img-top img-fluid w-100"
+          />
+        </figure>` : `<p class="text-body-secondary">No image available.</p>`}
+
+      ${postData.body ? `<p class="lead">${postData.body}</p>` : ''}
+
+      <p class="text-body-secondary small mb-0">
+        Created: ${postData.created ? new Date(postData.created).toLocaleString() : 'Unknown'}
+        ${postData.updated ? ` — Updated: ${new Date(postData.updated).toLocaleString()}` : ''}
+      </p>
+    </article>
   `;
 }
+
 
 // Function to display edit and delete buttons
 function displayEditDeleteButtons(post) {

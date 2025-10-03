@@ -118,12 +118,15 @@ function renderUserPosts(posts, username) {
     col.className = 'col-12 col-sm-6 col-lg-4'; // 1 → 2 → 3 columns
     col.innerHTML = `
       <article class="card h-100 shadow-sm">
-        ${
-          post.media?.url
-            ? `<img src="${post.media.url}" alt="${post.media.alt || 'Post image'}"
-                 class="card-img-top post-image" />`
-            : ''
-        }
+        ${post.media?.url ? `
+        <img
+          src="${post.media.url}"
+          alt="${post.media.alt || 'Post image'}"
+          class="card-img-top profile-thumb"
+          loading="lazy"
+          decoding="async"
+        />
+      ` : ''}
         <div class="card-body">
           <h4 class="h6 card-title mb-1">
             <a href="${basePath}/post/?id=${post.id}" class="stretched-link text-decoration-none">
