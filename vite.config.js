@@ -1,15 +1,19 @@
-import path, { resolve } from 'path';
+// vite.config.js
+import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  appType: 'mpa',
+  
+  base: '/',                    
   resolve: {
     alias: {
+      // Keep these ONLY if you actually import them in your JS:
+      // import 'bootstrap-css'; import 'bootstrap-js';
       'bootstrap-css': '/node_modules/bootstrap/dist/css/bootstrap.min.css',
       'bootstrap-js': '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     },
   },
-  appType: 'mpa', // Multi-Page Application
-  base: process.env.NODE_ENV === 'development' ? '/' : '/js2-ca-hilde/', // Base path for development and production
   build: {
     target: 'esnext',
     outDir: 'dist',
@@ -28,25 +32,10 @@ export default defineConfig({
       output: {
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: 'js/[name]-[hash].js',
-        assetFileNames: ({ name }) => {
-          if (/\.(css)$/.test(name ?? '')) {
-            return 'css/[name]-[hash][extname]'; // CSS files in dist/css
-          }
-          return 'assets/[name]-[hash][extname]'; // Other assets
-        },
+        assetFileNames: ({ name }) =>
+          /\.(css)$/.test(name ?? '') ? 'css/[name]-[hash][extname]' : 'assets/[name]-[hash][extname]',
       },
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@use 'sass:color';`, // Inject global SCSS usage
-          includePaths: [path.resolve(__dirname, 'src/scss')], // Include SCSS paths
-          quietDeps: true,
-        },
-      },
-    },
-  },
-  test: {
-    environment: 'jsdom',
   },
 });
+

@@ -1,0 +1,26 @@
+/* Subtle chrome */
+.navbar { border-bottom: 1px solid rgba(0,0,0,.08); }
+footer { border-top: 1px solid rgba(0,0,0,.08); padding: 1rem 0; color:#6c757d; }
+
+/* Optional: site max width */
+:root { --page-max: 1100px; }
+.container { max-width: var(--page-max); }
+
+/* Image helpers */
+.object-fit-cover { object-fit: cover; }
+.profile-banner { max-height: 280px; object-fit: cover; width: 100%; }
+
+/* Consistent post thumbnails */
+.card-img-top.post-image {
+  height: 220px;   /* adjust if you want 200/240/etc */
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* auth pages */
+.auth-shell { min-height: 70vh; display: grid; place-items: start center; }
+.auth-card { width: 100%; max-width: 560px; }
+
+
+

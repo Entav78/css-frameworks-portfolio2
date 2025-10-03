@@ -1,67 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CA CSS-Frameworks</title>
-    <link rel="stylesheet" href="/js2-ca-hilde/css/main.css">
-    <script type="module" src="./src/app.js"></script>
 
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CA CSS-Frameworks</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!-- Optional fallbacks -->
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <body class="page-home">
-    <header>
-      <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-          <h1>Welcome</h1>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNav"
-            aria-controls="offcanvasNav"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-            </ul>
-          </div>
-        </div>
-      </nav>
+</head>
 
-      <div
-        class="offcanvas offcanvas-start bg-dark text-white"
-        tabindex="-1"
-        id="offcanvasNav"
-        aria-labelledby="offcanvasNavLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavLabel">Menu</h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav">
-          </ul>
+<body class="page-home">
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+      <div class="container-fluid">
+        <h1 class="navbar-brand h3 mb-0">Welcome</h1>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav"
+          aria-controls="offcanvasNav" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto"></ul>
         </div>
       </div>
+    </nav>
 
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasNav"
+      aria-labelledby="offcanvasNavLabel">
+      <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5 mb-0" id="offcanvasNavLabel">Menu</h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-    </header>
-
-    <div class="post-container">
+      <div class="offcanvas-body">
+        <ul class="navbar-nav"></ul>
+      </div>
     </div>
-    
+  </header>
 
+  <main class="container py-4">
+    <div class="post-container"></div>
+  </main>
 
-    
+  <footer class="border-top py-4 mt-5">
+    <div class="container small text-secondary">
+      &copy; 2025 H Vatne. All rights reserved.
+    </div>
+  </footer>
 
-    <footer>
-      <p>&copy; 2025 H Vatne. All rights reserved.</p>
-    </footer>
-  </body>
+  <script type="module" src="/src/app.js"></script>
+</body>
+
 </html>

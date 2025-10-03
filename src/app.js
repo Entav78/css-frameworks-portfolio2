@@ -1,65 +1,37 @@
+
+import 'bootstrap/dist/css/bootstrap.min.css'; // bootstrap CSS
+import './styles.css';                         // your minimal fixes (see below)
+import 'bootstrap';                            // JS for offcanvas, etc.
+
 import router from './js/router/index.js';
 import { Navigation } from './js/ui/global/navigation.js';
-import 'bootstrap-css';
-import 'bootstrap-js';
 
-//import '/dist/css/bootstrap.min.css';
-//import '/dist/js/bootstrap.bundle.min.js';
-
-console.log('Router imported successfully');
-
-// Function to initialize navigation
 function initializeNavigation() {
-  const wideScreenNav = document.querySelector('.navbar-nav');
-  const sidebarNav = document.querySelector('.offcanvas-body .navbar-nav');
-
-  const containers = [];
-  if (wideScreenNav) containers.push(wideScreenNav);
-  if (sidebarNav) containers.push(sidebarNav);
-
-  if (containers.length === 0) {
-    console.error('No navigation containers found.');
-    return;
-  }
-
-  console.log('Wide Screen Nav:', wideScreenNav);
-  console.log('Sidebar Nav:', sidebarNav);
+  const wide = document.querySelector('.navbar-nav');
+  const side = document.querySelector('.offcanvas-body .navbar-nav');
+  const containers = [wide, side].filter(Boolean);
+  if (!containers.length) return;
 
   const navigation = new Navigation(containers);
 
-  function updateNavbar() {
-    const accessToken = localStorage.getItem('accessToken');
-    const isLoggedIn = !!accessToken;
-    console.log('Access token:', accessToken);
-    console.log('Navigation updated. Is Logged In:', isLoggedIn);
-
+  const update = () => {
+    const isLoggedIn = !!localStorage.getItem('accessToken');
     navigation.createNavbar(isLoggedIn, { includeHomeButton: true });
-  }
+  };
 
-  updateNavbar();
-
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'accessToken') {
-      updateNavbar();
-    }
+  update();
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'accessToken') update();
   });
-
-  console.log('Navigation setup completed.');
 }
 
-// Function to initialize the application
 async function initializeApp() {
-  // Initialize navigation
   initializeNavigation();
-
-  // Initialize router
   await router(window.location.pathname);
-  console.log('Router initialized.');
 }
 
-// Ensure the DOM is ready before initializing the app
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
-} else {
-  initializeApp();
-}
+document.readyState === 'loading'
+  ? document.addEventListener('DOMContentLoaded', initializeApp)
+  : initializeApp();
+
+

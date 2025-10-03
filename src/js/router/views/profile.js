@@ -51,86 +51,97 @@ async function setupProfilePage() {
 }
 
 function renderProfileDetails({ name, email, bio, avatar, banner }) {
-  const profileSection = document.getElementById('dynamic-profile-details');
+  const detailsEl = document.getElementById('dynamic-profile-details');
+  if (!detailsEl) return;
 
-  // Ensure the dynamic profile details section exists
-  if (!profileSection) {
-    console.error('Dynamic profile details section not found.');
-    return;
+  // Update the left avatar card image (use real avatar if present; otherwise fallback)
+  const avatarCard = document.getElementById('fallbackAvatarCard');
+  if (avatarCard) {
+    const imgEl = avatarCard.querySelector('img');
+    if (imgEl) {
+      if (avatar?.url) {
+        imgEl.src = avatar.url;
+        imgEl.alt = avatar.alt || `${name}'s avatar`;
+      } else {
+        imgEl.src = '/images/IMG_9166.jpg';
+        imgEl.alt = 'Hilde and Sasha';
+      }
+      // ensure correct styling
+      imgEl.classList.add('rounded-circle');
+      imgEl.style.width = '128px';
+      imgEl.style.height = '128px';
+      imgEl.style.objectFit = 'cover';
+    }
   }
 
-  // Hide the personal avatar if a dynamic avatar exists
-  if (avatar?.url) {
-    const personalAvatar = document.querySelector('.personal-avatar');
-    if (personalAvatar) personalAvatar.style.display = 'none';
-  }
+  // Render the profile details card (no extra avatar here—left card handles it)
+  detailsEl.innerHTML = `
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h4 card-title mb-1">${name}</h2>
+        <p class="text-body-secondary small mb-3">Email: ${email}</p>
+        ${bio ? `<p class="mb-3">${bio}</p>` : ''}
 
-  // Inject dynamic content into #dynamic-profile-details
-  profileSection.innerHTML = `
-    <h2>${name}</h2>
-    <p>Email: ${email}</p>
-    ${bio ? `<p>Bio: ${bio}</p>` : ''}
-    ${
-      avatar?.url
-        ? `<img src="${avatar.url}" alt="${
-            avatar.alt || 'Avatar'
-          }" class="profile-avatar" />`
-        : '<p>No avatar available</p>'
-    }
-    ${
-      banner?.url
-        ? `<img src="${banner.url}" alt="${
-            banner.alt || 'Banner'
-          }" class="profile-banner" />`
-        : '<p>No banner available</p>'
-    }
+        ${
+          banner?.url
+            ? `<img src="${banner.url}" alt="${banner.alt || 'Profile banner'}"
+                   class="img-fluid rounded profile-banner mb-2" />`
+            : ''
+        }
+      </div>
+    </div>
   `;
 }
 
+
+
+
+
 function renderUserPosts(posts, username) {
-  const postsContainer = document.querySelector('.post-container');
+  const container = document.querySelector('.post-container');
+  if (!container) return;
 
-  if (!postsContainer) {
-    console.error('Post container not found.');
+  // Header + row container for cards
+  container.innerHTML = `
+    <h3 class="h5 mb-3">${username}'s Posts</h3>
+    <div class="row g-3" id="postsRow"></div>
+  `;
+  const row = container.querySelector('#postsRow');
+
+  if (!posts.length) {
+    row.outerHTML = `<p class="text-body-secondary mb-0">No posts found.</p>`;
     return;
   }
-
-  postsContainer.innerHTML = '';
-  const header = document.createElement('h2');
-  header.textContent = `${username}'s Posts`;
-  postsContainer.appendChild(header);
-
-  if (posts.length === 0) {
-    postsContainer.innerHTML = `<h2>${username}'s Posts</h2><p>No posts found.</p>`;
-    return;
-  }
-
-  const postsList = document.createElement('div');
-  postsList.className = 'post-list'; // Matches your CSS class for styling
 
   posts.forEach((post) => {
-    const postCard = document.createElement('div');
-    postCard.className = 'post-card'; // Matches your CSS class for styling
-    postCard.innerHTML = `
-      <div class="post-content">
-        <h3>
-          <a href="${basePath}/post/?id=${post.id}" class="post-link">${
-      post.title || 'Untitled Post'
-    }</a>
-        </h3>
-        <p>${post.body || 'No content available.'}</p>
+    const col = document.createElement('div');
+    col.className = 'col-12 col-sm-6 col-lg-4'; // 1 → 2 → 3 columns
+    col.innerHTML = `
+      <article class="card h-100 shadow-sm">
         ${
           post.media?.url
-            ? `<img src="${post.media.url}" alt="${
-                post.media.alt || 'Post image'
-              }" class="post-image" />`
-            : '<p>No image available</p>'
+            ? `<img src="${post.media.url}" alt="${post.media.alt || 'Post image'}"
+                 class="card-img-top post-image" />`
+            : ''
         }
-      </div>
+        <div class="card-body">
+          <h4 class="h6 card-title mb-1">
+            <a href="${basePath}/post/?id=${post.id}" class="stretched-link text-decoration-none">
+              ${post.title || 'Untitled Post'}
+            </a>
+          </h4>
+          ${
+            post.body
+              ? `<p class="card-text small text-body-secondary mb-0">${post.body}</p>`
+              : ''
+          }
+        </div>
+      </article>
     `;
-    postsList.appendChild(postCard);
+    row.appendChild(col);
   });
-
-  postsContainer.innerHTML = `<h2>${username}'s Posts</h2>`; // Set the header
-  postsContainer.appendChild(postsList); // Append the posts list
 }
+
+
+
+
